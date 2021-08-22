@@ -1,7 +1,7 @@
 const submit = document.querySelector('.submit')
-// const temp = document.querySelector('.temp')
-// const desc = document.querySelector('.desc')
-// const location = document.querySelector('.location')
+const temp = document.querySelector('.temp')
+const desc = document.querySelector('.desc')
+const city = document.querySelector('.city')
 const searchBar = document.querySelector('.search')
 const image = document.querySelector('.image')
 const apiKey = '588188683e61bb5a644af1f600af33f9'
@@ -25,7 +25,9 @@ async function init() {
 }
 
 function updateDisplay () {
-    // temp.innerText=currentWeather.main.temp
+    temp.innerText = Math.round(currentWeather.main.temp-273.15)
+    city.innerText = inputCity
+    desc.innerText = currentWeather.weather[0].main
     
     switch(currentWeather.weather[0].main) {
         case 'Clouds':
@@ -34,8 +36,11 @@ function updateDisplay () {
         case 'Rain':
             image.src='https://i.imgur.com/GhyWeYB.jpeg'
             break
+        case 'Clear':
+            image.src = 'https://i.imgur.com/fVaPiDO.jpg'
+            break
         default:
-            image.src='https://i.imgur.com/oiYLRyZ.jpeg'
+            image.src = 'https://i.imgur.com/oiYLRyZ.jpeg'
     }
 }
 
