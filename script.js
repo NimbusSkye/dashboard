@@ -9,7 +9,7 @@ const image = document.querySelector('.image')
 const err = document.querySelector('.error')
 const humidity = document.querySelector('.humidity')
 const apiKey = '5835f1f8c4b04f35ffbfed07545e1b08'
-let inputCity = 'Toronto,CA'
+let inputCity = 'Montreal,CA'
 let url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
 let weather
 
@@ -17,14 +17,15 @@ async function init() {
     const res = await fetch(url)
     weather = await res.json()
     updateDisplay()
-    submit.addEventListener('click', ()=>{
-        inputCity=searchBar.value
-        url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
-        fetch(url)
-            .then(res=>res.json())
-            .then(data=>weather=data)
-            .then(()=>updateDisplay())
-    })
+    submit.addEventListener('click', ()=>fetchData())
+}
+
+async function fetchData () {
+    inputCity=searchBar.value
+    url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
+    const res = await fetch(url)
+    weather = await res.json()
+    updateDisplay()
 }
 
 function updateDisplay () {
@@ -35,9 +36,9 @@ function updateDisplay () {
     err.innerText=''
     image.src=''
     image.alt='Loading Image...'
-    temp.innerText = KtoC(weather.main.temp)
-    feelsLike.innerText = `Feels like ${KtoC(weather.main.feels_like)}`
-    highlow.innerText = `High ${KtoC(weather.main.temp_max)}, Low ${KtoC(weather.main.temp_min)}`
+    temp.innerText = `${KtoC(weather.main.temp)}°C`
+    feelsLike.innerText = `Feels like ${KtoC(weather.main.feels_like)}°C`
+    highlow.innerText = `Current range: ${KtoC(weather.main.temp_min)}°C - ${KtoC(weather.main.temp_max)}°C`
     city.innerText = `${weather.name}, ${weather.sys.country}`
     desc.innerText = weather.weather[0].main
     humidity.innerText = `${weather.main.humidity}% humidity`
