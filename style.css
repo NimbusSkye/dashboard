@@ -7,8 +7,38 @@ body {
       Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     display: flex;
     flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+  } 
+
+.container {
+  display: flex;
+    flex-flow: row nowrap;
     width: 100%;
     justify-content: center;
     align-items: center;
+}
 
-  } 
+input {
+  border-radius: 1rem;
+  margin: 1.5rem 0 0.5rem 0
+}
+
+.info {
+  flex-basis: 40%;
+  display: flex;
+  flex-flow: column nowrap;
+  border: 2px solid white;
+  padding: 15px
+}
+
+img {
+  flex-basis: 40%;
+  margin: 40px;
+  border: 2px solid white
+}
+
+.search, .submit {
+  align-items: center;
+  justify-content: center;
+}

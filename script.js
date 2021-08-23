@@ -3,45 +3,70 @@ const temp = document.querySelector('.temp')
 const desc = document.querySelector('.desc')
 const city = document.querySelector('.city')
 const searchBar = document.querySelector('.search')
+const feelsLike = document.querySelector('.feelslike')
+const highlow = document.querySelector('.highlow')
 const image = document.querySelector('.image')
-const apiKey = '588188683e61bb5a644af1f600af33f9'
+const err = document.querySelector('.error')
+const humidity = document.querySelector('.humidity')
+const apiKey = '5835f1f8c4b04f35ffbfed07545e1b08'
 let inputCity = 'Toronto,CA'
 let url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
-let data = null
-let currentWeather
+let weather
 
 async function init() {
     const res = await fetch(url)
-    currentWeather = await res.json()
+    weather = await res.json()
     updateDisplay()
     submit.addEventListener('click', ()=>{
         inputCity=searchBar.value
         url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
         fetch(url)
             .then(res=>res.json())
-            .then(data=>currentWeather=data)
+            .then(data=>weather=data)
             .then(()=>updateDisplay())
     })
 }
 
 function updateDisplay () {
-    temp.innerText = Math.round(currentWeather.main.temp-273.15)
-    city.innerText = inputCity
-    desc.innerText = currentWeather.weather[0].main
+    if(weather.cod==404 || inputCity==='') {
+        err.innerText = 'Error: Invalid City Name'
+        return
+    }
+    err.innerText=''
+    image.src=''
+    image.alt='Loading Image...'
+    temp.innerText = KtoC(weather.main.temp)
+    feelsLike.innerText = `Feels like ${KtoC(weather.main.feels_like)}`
+    highlow.innerText = `High ${KtoC(weather.main.temp_max)}, Low ${KtoC(weather.main.temp_min)}`
+    city.innerText = `${weather.name}, ${weather.sys.country}`
+    desc.innerText = weather.weather[0].main
+    humidity.innerText = `${weather.main.humidity}% humidity`
     
-    switch(currentWeather.weather[0].main) {
+    switch(weather.weather[0].main) {
         case 'Clouds':
             image.src='https://i.imgur.com/zoclZid.png'
+            document.body.style.backgroundColor = '#123059'
+            document.body.style.color = 'white'
             break
         case 'Rain':
             image.src='https://i.imgur.com/GhyWeYB.jpeg'
+            image.src = 'https://i.imgur.com/oiYLRyZ.jpeg'
+            document.body.style.backgroundColor = 'grey'
+            document.body.style.color = 'white'
             break
         case 'Clear':
             image.src = 'https://i.imgur.com/fVaPiDO.jpg'
+            document.body.style.backgroundColor = '#f2ab75'
+            document.body.style.color = 'black'
             break
         default:
-            image.src = 'https://i.imgur.com/oiYLRyZ.jpeg'
+            image.src='https://i.imgur.com/GhyWeYB.jpeg'
+            document.body.style.backgroundColor = 'grey'
     }
+}
+
+function KtoC (kelvin) {
+    return Math.round(kelvin-273.15)
 }
 
 init()
