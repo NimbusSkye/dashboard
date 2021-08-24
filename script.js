@@ -8,19 +8,39 @@ const highlow = document.querySelector('.highlow')
 const image = document.querySelector('.image')
 const err = document.querySelector('.error')
 const humidity = document.querySelector('.humidity')
-const apiKey = '5835f1f8c4b04f35ffbfed07545e1b08'
+const multiday = document.querySelector('.multiday')
+let date = new Date()
+
+const apiKey = 'd97b392d7b7e478e21d20024a869fcac'
 let inputCity = 'Montreal,CA'
 let url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
 let weather
+let multidayW
 
 async function init() {
     const res = await fetch(url)
     weather = await res.json()
     updateDisplay()
-    submit.addEventListener('click', ()=>fetchData())
+    submit.addEventListener('click', ()=>fetchCurrent())
 }
 
-async function fetchData () {
+async function fetchMultiDay () {
+    date = new Date()
+    multiday.textContent = ''
+    const url = `https://api.openweathermap.org/data/2.5/onecall?lat=${weather.coord.lat}&lon=${weather.coord.lon}&units=metric&appid=${apiKey}`
+    const res = await fetch(url)
+    multidayW = await res.json()
+
+    multidayW.daily.forEach(e=>{
+        let day = document.createElement('div')
+        day.classList.add('daily')
+        day.innerHTML = `<h5>${date.toString().slice(0,10)}</h5> <br> ${e.weather[0].main} <br> High ${Math.round(e.temp.max)}°C <br> Low ${Math.round(e.temp.min)}°C <br> ${e.humidity}% Humidity`
+        multiday.appendChild(day)
+        date = addDays(date, 1)
+    })
+}
+
+async function fetchCurrent () {
     inputCity=searchBar.value
     url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
     const res = await fetch(url)
@@ -42,6 +62,7 @@ function updateDisplay () {
     city.innerText = `${weather.name}, ${weather.sys.country}`
     desc.innerText = weather.weather[0].main
     humidity.innerText = `${weather.main.humidity}% humidity`
+    fetchMultiDay()
     
     switch(weather.weather[0].main) {
         case 'Clouds':
@@ -68,6 +89,10 @@ function updateDisplay () {
 
 function KtoC (kelvin) {
     return Math.round(kelvin-273.15)
+}
+
+function addDays(theDate, days) {
+    return new Date(theDate.getTime() + days*24*60*60*1000);
 }
 
 init()

@@ -21,7 +21,7 @@ body {
 
 input {
   border-radius: 1rem;
-  margin: 1.5rem 0 0.5rem 0
+  margin: 1rem 0 0 0
 }
 
 .info {
@@ -30,6 +30,21 @@ input {
   flex-flow: column nowrap;
   border: 2px solid white;
   padding: 15px
+}
+
+.multiday {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.daily {
+  flex-basis: 20%;
+  margin: 1rem;
+  border: 2px solid white;
+  padding: 1rem
 }
 
 img {
