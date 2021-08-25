@@ -11,9 +11,9 @@ const humidity = document.querySelector('.humidity')
 const multiday = document.querySelector('.multiday')
 let date = new Date()
 
-const apiKey = '00c83340ffa1a0e895108c4471ab4db5'
+const apiKey = 'apikey'
 let inputCity = 'Montreal,CA'
-let url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
+let url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&units=metric&appid=${apiKey}`
 let weather
 let multidayW
 
@@ -34,7 +34,7 @@ async function fetchMultiDay () {
     multidayW.daily.forEach(e=>{
         let day = document.createElement('div')
         day.classList.add('daily')
-        day.innerHTML = `<h5>${date.toString().slice(0,10)}</h5> <br> <i class='wi wi-${translate(e.weather[0].main)}'></i> <br> ${e.weather[0].main} <br> High ${Math.round(e.temp.max)}°C <br> Low ${Math.round(e.temp.min)}°C <br> ${e.humidity}% Humidity <br> ${e.pop*100}% precipitation`
+        day.innerHTML = `<h5>${date.toString().slice(0,10)}</h5> <br> <i class='wi wi-${translate(e.weather[0].main)}'></i> <br> ${e.weather[0].main} <br> High ${Math.round(e.temp.max)}°C <br> Low ${Math.round(e.temp.min)}°C <br> ${e.humidity}% Humidity <br> ${Math.round(e.pop*100)}% precipitation`
         multiday.appendChild(day)
         date = addDays(date, 1)
     })
@@ -42,7 +42,7 @@ async function fetchMultiDay () {
 
 async function fetchCurrent () {
     inputCity=searchBar.value
-    url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
+    url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&units=metric&appid=${apiKey}`
     const res = await fetch(url)
     weather = await res.json()
     updateDisplay()
@@ -53,15 +53,18 @@ function updateDisplay () {
         err.innerText = 'Error: Invalid City Name'
         return
     }
+
+    const vals = Object.values(weather.main).map(e=>Math.round(e))
+
     err.innerText=''
     image.src=''
     image.alt='Loading Image...'
-    temp.innerText = `${KtoC(weather.main.temp)}°C`
-    feelsLike.innerText = `Feels like ${KtoC(weather.main.feels_like)}°C`
-    highlow.innerText = `Current range: ${KtoC(weather.main.temp_min)}°C - ${KtoC(weather.main.temp_max)}°C`
+    temp.innerText = `${vals[0]}°C`
+    feelsLike.innerText = `Feels like ${vals[1]}°C`
+    highlow.innerText = `Current range: ${vals[2]}°C to ${vals[3]}°C`
     city.innerText = `${weather.name}, ${weather.sys.country}`
     desc.innerText = weather.weather[0].main
-    humidity.innerText = `${weather.main.humidity}% humidity`
+    humidity.innerText = `${vals[5]}% humidity`
     fetchMultiDay()
     
     switch(weather.weather[0].main) {
