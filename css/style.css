@@ -11,6 +11,12 @@ body {
     align-items: center;
   } 
 
+  .wi {
+    font-size: 6rem;
+    color: #924da3;
+    margin-bottom: 2rem;
+  }
+
 .container {
   display: flex;
     flex-flow: row nowrap;

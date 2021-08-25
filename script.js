@@ -11,7 +11,7 @@ const humidity = document.querySelector('.humidity')
 const multiday = document.querySelector('.multiday')
 let date = new Date()
 
-const apiKey = 'd97b392d7b7e478e21d20024a869fcac'
+const apiKey = '00c83340ffa1a0e895108c4471ab4db5'
 let inputCity = 'Montreal,CA'
 let url = `https://api.openweathermap.org/data/2.5/weather?q=${inputCity}&appid=${apiKey}`
 let weather
@@ -34,7 +34,7 @@ async function fetchMultiDay () {
     multidayW.daily.forEach(e=>{
         let day = document.createElement('div')
         day.classList.add('daily')
-        day.innerHTML = `<h5>${date.toString().slice(0,10)}</h5> <br> ${e.weather[0].main} <br> High ${Math.round(e.temp.max)}°C <br> Low ${Math.round(e.temp.min)}°C <br> ${e.humidity}% Humidity`
+        day.innerHTML = `<h5>${date.toString().slice(0,10)}</h5> <br> <i class='wi wi-${translate(e.weather[0].main)}'></i> <br> ${e.weather[0].main} <br> High ${Math.round(e.temp.max)}°C <br> Low ${Math.round(e.temp.min)}°C <br> ${e.humidity}% Humidity <br> ${e.pop*100}% precipitation`
         multiday.appendChild(day)
         date = addDays(date, 1)
     })
@@ -89,6 +89,17 @@ function updateDisplay () {
 
 function KtoC (kelvin) {
     return Math.round(kelvin-273.15)
+}
+
+function translate (description) {
+    switch (description) {
+        case 'Clouds':
+            return 'cloud'
+        case 'Clear':
+            return 'day-sunny'
+        default:
+            return description.toLowerCase()
+    }
 }
 
 function addDays(theDate, days) {
